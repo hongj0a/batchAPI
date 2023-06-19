@@ -104,7 +104,7 @@ public class UserSchedules {
                 List<Grade> findLevel = gradeRepository.findByGradeScoreLessThanEqualOrderByGradeScoreDesc(totalScore);
 
                 if (findLevel.size() != 0) {
-                    finalUserLevel = Long.valueOf(findLevel.get(0).getMenuNum());
+                    finalUserLevel = Long.valueOf(findLevel.get(0).getGradeIdx());
                     userService.updateUserLevel(findUser, Math.toIntExact(totalScore), finalUserLevel);
                 }
 
@@ -231,4 +231,34 @@ public class UserSchedules {
 
     }
 
+    //매일 오전 3시 탈퇴 후 3년지난 회원 개인정보 지우기
+    @Scheduled(cron = "0 0 3 * * *")
+    public void personalInfoDeleted () throws ParseException {
+
+        /**
+         * 1. deleteAt 이후 36개월 경과시 개인정보 모두 삭제 처리
+         */
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+
+        //12개월 검사
+        Calendar cal36 = Calendar.getInstance();
+        cal36.add(Calendar.YEAR, 3);
+        Date after36 = dateFormat.parse(dateFormat.format(cal36.getTime()));
+
+        //date12 users
+        List<User> users36monthAfter = userRepository.findByDeleteAtGreaterThanEqualAndStatus(after36, 30);
+
+
+        for (int o = 0; o < users36monthAfter.size(); o++) {
+            userService.updateRemoveUser(users36monthAfter.get(o));
+        }
+
+
+        BatchLog batchLog = new BatchLog();
+
+        batchLog.setMethod("personalInfoDeleted()");
+        batchLogRepository.save(batchLog);
+
+    }
 }

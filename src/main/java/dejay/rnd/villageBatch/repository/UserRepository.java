@@ -15,5 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByUserIdx(Long userIdx);
 
     List<User> findByLastLoginDateLessThanEqualAndStatusNotIn(Date beforeDate,int[] status);
+
+    List<User> findByDeleteAtGreaterThanEqualAndStatus(Date afterDate,int status);
     List<User> findByStatusAndLastLoginDateLessThanEqual(Integer status,  Date beforeDate );
 }

@@ -51,6 +51,7 @@ public class UserService {
         user.setName(null);
         user.setNickName(null);
         user.setCiValue(null);
+        user.setPhoneNum(null);
         user.setDeleteAt(BatchUtil.getNowDate());
         user.setUpdateAt(BatchUtil.getNowDate());
         userRepository.save(user);
@@ -60,6 +61,26 @@ public class UserService {
         sh.setDeleteAt(BatchUtil.getNowDate());
         sh.setCreateAt(BatchUtil.getNowDate());
         sh.setStatus(30);
+
+        statusHistoryRepository.save(sh);
+    }
+
+    @Transactional
+    public void updateRemoveUser(User user) {
+        user.setEmail(null);
+        user.setIdEmail(null);
+        user.setSnsName(null);
+        user.setSnsType(null);
+        user.setName(null);
+        user.setNickName(null);
+        user.setCiValue(null);
+        user.setPhoneNum(null);
+        user.setUpdateAt(BatchUtil.getNowDate());
+        userRepository.save(user);
+
+        StatusHistory sh = new StatusHistory();
+        sh.setUser(user);
+        sh.setCreateAt(BatchUtil.getNowDate());
 
         statusHistoryRepository.save(sh);
     }
