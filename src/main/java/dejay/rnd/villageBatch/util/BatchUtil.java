@@ -51,11 +51,11 @@ public class BatchUtil {
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
 
-        params.add("userIdx", String.valueOf(pushDto.getUserIdx()));
+        params.add("userIdx", null);
         params.add("adminIdx", null);
-        params.add("targetIdx", String.valueOf(pushDto.getTargetIdx()));
+        params.add("targetIdx", "0");
         params.add("message", pushDto.getMessage());
-        params.add("type", String.valueOf(pushDto.getType()));
+        params.add("type", "0");
         params.add("title", pushDto.getTitle());
 
         for (int i=0; i<pushDto.getHostIdxes().length; i++) {

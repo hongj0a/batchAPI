@@ -141,30 +141,29 @@ public class UserSchedules {
         Date before59 = dateFormat.parse(dateFormat.format(cal59.getTime()));
 
         //date11 users
-        List<User> users11monthBefore = userRepository.findByLastLoginDateLessThanEqual(before11);
+        List<User> users11monthBefore = userRepository.findByLastLoginDateLessThanEqualAndStatusNotIn(before11, new int[]{30});
         Long[] host11s = new Long[users11monthBefore.size()];
 
         //date59 users
-        List<User> users59monthBefore = userRepository.findByLastLoginDateLessThanEqual(before59);
+        List<User> users59monthBefore = userRepository.findByLastLoginDateLessThanEqualAndStatusNotIn(before59, new int[]{30});
         Long[] host59s = new Long[users59monthBefore.size()];
 
 
         for (int j = 0; j < users11monthBefore.size(); j++) {
             for (int k = 0; k < host11s.length; k++) {
-                host11s[k] = users11monthBefore.get(j).getUserIdx();
+                host11s[k] = users11monthBefore.get(k).getUserIdx();
             }
         }
 
         for (int l = 0; l < users59monthBefore.size(); l++) {
             for (int m = 0; m < host59s.length; m++) {
-                host59s[m] = users59monthBefore.get(l).getUserIdx();
+                host59s[m] = users59monthBefore.get(m).getUserIdx();
             }
         }
 
-        //푸시 외부망 테스트 불가, 내부망 테스트 해볼것
         CompletableFuture.runAsync(() -> {
             try {
-                pushService.sendPush(host11s, 0,
+                pushService.sendPush(host11s,
                         "휴면 계정 등록 안내", "회원님께서는 1년 동안 접속하지 않아 휴면계정으로 전환 될 예정입니다. 1개월 이내 재 로그인 시 휴면계정으로 전환되지 않으며, 휴면계정이 되더라도 다시 로그인하시면 계정이 활성화됩니다. ");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -174,7 +173,7 @@ public class UserSchedules {
 
         CompletableFuture.runAsync(() -> {
             try {
-                pushService.sendPush(host59s, 0,
+                pushService.sendPush(host59s,
                         "장기 미접속으로 인한 탈퇴처리 안내", "회원님께서는 5년동안 접속하지 않아 자동탈퇴 처리 예정입니다. 자동탈퇴 처리 후 재가입이 불가능 합니다. 서비스 이용에 참고해 주세요.");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -207,7 +206,7 @@ public class UserSchedules {
         Date before12 = dateFormat.parse(dateFormat.format(cal12.getTime()));
 
         //date12 users
-        List<User> users12monthBefore = userRepository.findByLastLoginDateLessThanEqual(before12);
+        List<User> users12monthBefore = userRepository.findByLastLoginDateLessThanEqualAndStatusNotIn(before12, new int[]{30});
 
         //60개월 검사
         Calendar cal60 = Calendar.getInstance();
@@ -215,7 +214,7 @@ public class UserSchedules {
         Date before60 = dateFormat.parse(dateFormat.format(cal60.getTime()));
 
         //date60 users
-        List<User> users60monthBefore = userRepository.findByLastLoginDateLessThanEqual(before60);
+        List<User> users60monthBefore = userRepository.findByLastLoginDateLessThanEqualAndStatusNotIn(before60, new int[]{30});
 
         for (int o = 0; o < users12monthBefore.size(); o++) {
             userService.updateUserStatus(users12monthBefore.get(o), 20);

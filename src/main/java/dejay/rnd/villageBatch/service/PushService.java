@@ -11,11 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PushService {
 
-    public void sendPush(Long[] hostIdxes,int type, String title, String message) {
+    public void sendPush(Long[] hostIdxes, String title, String message) {
         PushDto pushDto = new PushDto();
 
         pushDto.setHostIdxes(hostIdxes);
-        pushDto.setType(type);
         pushDto.setTitle(title);
         pushDto.setMessage(message);
 
