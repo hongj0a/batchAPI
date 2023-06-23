@@ -31,7 +31,7 @@ public class Transaction {
     @Column (name = "transaction_idx")
     private Long transactionIdx;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     @JoinColumn (name = "rentalIdx")
     private Rental rental;
@@ -86,7 +86,7 @@ public class Transaction {
     @ColumnDefault("20")
     private Integer renterStatus;
 
-    @Column
+    @Column(length = 50000)
     private String updator;
 
     @Column (name = "transaction_num")

@@ -55,7 +55,7 @@ public class TransactionHistory {
     @Column (name = "renter_status")
     private Integer renterStatus;
 
-    @Column
+    @Column(length = 50000)
     private String updator;
 
     @Column (name = "transaction_num")

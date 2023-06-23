@@ -1,4 +1,4 @@
-package dejay.rnd.villageBatch.domain.domain;
+package dejay.rnd.villageBatch.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -14,33 +14,30 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "category_image")
+@Table(name = "user_item")
 @Entity
 @DynamicInsert
-public class CategoryImage {
+public class UserItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "image_idx")
-    private Long imageIdx;
+    @Column (name = "user_item_idx")
+    private Long userItemIdx;
 
     @ManyToOne
     @NotNull
-    @JoinColumn (name = "categoryIdx")
-    private Category category;
+    @JoinColumn (name = "userIdx")
+    private User user;
 
-    @Column (length = 1000 , name = "image_url")
-    private String imageUrl;
+    @ManyToOne
+    @NotNull
+    @JoinColumn (name = "itemIdx")
+    private EvaluationItems evaluationItems;
 
+    @NotNull
     @Temporal(value = TemporalType.TIMESTAMP)
     @CreationTimestamp
     @Column (name = "create_at")
     private Date createAt;
-
-    @Column (name = "update_at")
-    private Date updateAt;
-
-    @Column(length = 50000)
-    private String updator;
 
 }

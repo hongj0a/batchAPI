@@ -1,4 +1,4 @@
-package dejay.rnd.villageBatch.domain.domain;
+package dejay.rnd.villageBatch.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -15,38 +15,44 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "to_block")
+@Table(name = "evaluation_items")
 @Entity
 @DynamicInsert
-public class ToBlock {
+public class EvaluationItems {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "to_block_idx")
-    private Long toBlockIdx;
+    @Column (name = "items_idx")
+    private Long itemsIdx;
 
     @ManyToOne
     @NotNull
-    @JoinColumn (name = "userIdx", referencedColumnName = "user_idx")
-    private User user;
+    @JoinColumn (name = "adminIdx")
+    private Admin admin;
 
-    @ManyToOne
-    @NotNull
-    @JoinColumn (name = "blockUserIdx", referencedColumnName = "user_idx")
-    private User blockUser;
-
-    @Temporal(value = TemporalType.TIMESTAMP)
-    @CreationTimestamp
-    @Column (name = "create_at")
-    private Date createAt;
-
+    @Column( length = 50000)
+    private String comment;
 
     @ColumnDefault("0")
     @Column (name = "delete_yn")
     private boolean deleteYn;
 
+    @NotNull
+    @Temporal(value = TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    @Column (name = "create_at")
+    private Date createAt;
+
+    @Column (name = "update_at")
+    private Date updateAt;
+
     @Column (name = "delete_at")
     private Date deleteAt;
 
+    @Column(length = 50000)
+    private String updator;
+
+    @Column (name = "order_num")
+    private Integer orderNum;
 
 }

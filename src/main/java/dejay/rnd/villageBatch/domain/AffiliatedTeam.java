@@ -1,7 +1,6 @@
 package dejay.rnd.villageBatch.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -25,7 +24,6 @@ public class AffiliatedTeam {
     private Long teamIdx;
 
     @ManyToOne
-    @NotNull
     @JoinColumn (name = "adminIdx")
     private Admin admin;
 
@@ -44,7 +42,7 @@ public class AffiliatedTeam {
     @Column (name = "update_at")
     private Date updateAt;
 
-    @Column
+    @Column(length = 50000)
     private String updator;
 
 }

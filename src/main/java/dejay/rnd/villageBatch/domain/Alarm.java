@@ -36,7 +36,7 @@ public class Alarm {
     @Column(name = "read_yn")
     private boolean readYn;
 
-    @Column(length = 2000)
+    @Column(length = 50000)
     private String content;
 
     @Temporal(value = TemporalType.TIMESTAMP)
@@ -47,9 +47,18 @@ public class Alarm {
     @Column(name = "target_idx")
     private Long targetIdx;
 
+    @Column(name = "target_idx2")
+    private Long targetIdx2;
+
     @Column
     private Integer type;
 
     @Column(name = "host_idx")
     private Long hostIdx;
+
+    @Column (name = "update_at")
+    private Date updateAt;
+
+    @Column(length = 50000)
+    private String updator;
 }

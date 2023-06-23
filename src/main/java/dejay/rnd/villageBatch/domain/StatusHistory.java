@@ -53,8 +53,7 @@ public class StatusHistory {
     @Column(length = 1000)
     private String title;
 
-    @Column
-    @Lob
+    @Column(length = 5000)
     private String content;
 
     @Column

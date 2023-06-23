@@ -1,4 +1,4 @@
-package dejay.rnd.villageBatch.domain.domain;
+package dejay.rnd.villageBatch.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -15,57 +15,40 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "faq")
+@Table(name = "user_memo")
 @Entity
 @DynamicInsert
-public class Faq {
+public class UserMemo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column (name = "faq_idx")
-    private Long faqIdx;
+    @Column (name ="memo_idx")
+    private Long memoIdx;
 
     @ManyToOne
     @NotNull
-    @JoinColumn (name = "categoryIdx")
-    private Category category;
+    @JoinColumn (name = "userIdx")
+    private User user;
 
     @ManyToOne
     @NotNull
     @JoinColumn (name = "adminIdx")
     private Admin admin;
 
-    @Column
-    private String title;
+    @Column(length = 5000)
+    private String memo;
 
-    @Column(length = 50000)
-    private String content;
-
-    @ColumnDefault("0")
-    @Column (name = "delete_yn")
-    private Boolean deleteYn;
-
-    @Column (name = "active_yn")
-    @Builder.Default
-    private boolean activeYn = true;
-
+    @NotNull
     @Temporal(value = TemporalType.TIMESTAMP)
     @CreationTimestamp
     @Column (name = "create_at")
     private Date createAt;
 
-    @Column (name = "update_at")
-    private Date updateAt;
+    @ColumnDefault("0")
+    @Column (name = "delete_yn")
+    private boolean deleteYn;
 
     @Column (name = "delete_at")
     private Date deleteAt;
 
-    @Column (name = "active_at")
-    private Date activeAt;
-
-    @Column(length = 50000)
-    private String updator;
-
-    @Column (length = 2000)
-    private String answer;
 }

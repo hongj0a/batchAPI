@@ -51,11 +51,11 @@ public class OneToOneInquiry {
     @Column
     private String status;
 
-    @Column (columnDefinition = "TEXT")
+    @Column(length = 50000)
     private String content;
 
 
-    @Column (name = "answer_content", columnDefinition = "TEXT")
+    @Column (name = "answer_content", length = 50000)
     private String answerContent;
 
     @ColumnDefault("0")
@@ -80,7 +80,7 @@ public class OneToOneInquiry {
     @Column (name = "delete_at")
     private Date deleteAt;
 
-    @Column
+    @Column(length = 50000)
     private String updator;
 
 }

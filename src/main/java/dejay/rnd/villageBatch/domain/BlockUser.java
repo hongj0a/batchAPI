@@ -45,7 +45,7 @@ public class BlockUser {
     @Column (name = "processing_status")
     private Integer processingStatus;
 
-    @Column (name = "processing_content", length = 1000)
+    @Column (name = "processing_content", length = 50000)
     private String processingContent;
 
     @Temporal(value = TemporalType.TIMESTAMP)
@@ -63,7 +63,7 @@ public class BlockUser {
     @Column (name = "delete_at")
     private Date deleteAt;
 
-    @Column
+    @Column(length = 50000)
     private String updator;
 
     @Column (name = "complete_at")

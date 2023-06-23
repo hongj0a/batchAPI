@@ -40,7 +40,7 @@ public class ReviewImage {
     @Column (name = "update_at")
     private Date updateAt;
 
-    @Column
+    @Column(length = 50000)
     private String updator;
 
 }

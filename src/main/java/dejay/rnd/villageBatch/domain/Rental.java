@@ -31,7 +31,11 @@ public class Rental {
     @Builder.Default
     private List<RentalCategoryInfo> rentalCategoryInfos = new ArrayList<>();
 
-    @ManyToOne
+    @OneToMany(mappedBy = "rental", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Transaction> transactionInfos = new ArrayList<>();
+
+    @ManyToOne (fetch = FetchType.LAZY)
     @NotNull
     @JoinColumn (name = "userIdx")
     private User user;
@@ -59,7 +63,7 @@ public class Rental {
     @Column (name = "rental_price")
     private Long rentalPrice;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(length = 50000)
     private String content;
 
     @ColumnDefault("0")
@@ -96,7 +100,7 @@ public class Rental {
     @Column (name = "delete_at")
     private Date deleteAt;
 
-    @Column
+    @Column(length = 50000)
     private String updator;
 
     @Temporal(value = TemporalType.TIMESTAMP)

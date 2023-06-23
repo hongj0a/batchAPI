@@ -30,14 +30,14 @@ public class AdminGroup {
     @JoinColumn (name = "adminIdx")
     private Admin admin;
 
-    @Column
+    @Column(length = 50000)
     private String updator;
 
     @Column (name = "group_name", unique = true)
     @NotNull(message = " group name은 Null 일 수 없습니다. ")
     private String groupName;
 
-    @Column (length = 1000, name ="group_desc")
+    @Column (length = 5000, name ="group_desc")
     private String groupDesc;
 
     @ColumnDefault("1")

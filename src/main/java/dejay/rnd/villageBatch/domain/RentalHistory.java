@@ -47,7 +47,7 @@ public class RentalHistory {
     @Column (name = "rental_price")
     private Integer rentalPrice;
 
-    @Lob
+    @Column(length = 50000)
     private String content;
 
     @Column (name = "trading_method")
@@ -77,7 +77,7 @@ public class RentalHistory {
     @Column (name = "delete_at")
     private Date deleteAt;
 
-    @Column
+    @Column(length = 50000)
     private String updator;
 
     @Column(name ="pull_up_at")
@@ -101,7 +101,6 @@ public class RentalHistory {
     @Column(name = "town_4")
     private Integer town4;
 
-    @Column
-    @Lob
+    @Column(length = 5000)
     private String memo;
 }

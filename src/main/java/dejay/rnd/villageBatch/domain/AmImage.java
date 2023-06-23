@@ -33,7 +33,7 @@ public class AmImage {
     @Lob
     private String imageUrl;
 
-    @Column
+    @Column(length = 50000)
     private String updator;
 
     @Temporal(value = TemporalType.TIMESTAMP)

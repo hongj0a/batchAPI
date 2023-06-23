@@ -57,7 +57,7 @@ public class CouponManagement {
     @Column (name = "use_at")
     private Date useAt;
 
-    @Column
+    @Column(length = 50000)
     private String updator;
 
 }

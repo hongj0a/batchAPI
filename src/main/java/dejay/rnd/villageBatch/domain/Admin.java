@@ -30,7 +30,7 @@ public class Admin {
     @JoinColumn (name = "teamIdx")
     private AffiliatedTeam affiliatedTeam;
 
-    @Column
+    @Column (length = 50000)
     @NotNull(message = " admin id는 Null 일 수 없습니다.")
     private String id;
 
@@ -42,7 +42,7 @@ public class Admin {
     @Column (name = "active_yn")
     private boolean activeYn;
 
-    @Column
+    @Column (length = 50000)
     @NotNull
     private String name;
 
@@ -67,15 +67,10 @@ public class Admin {
     @Column (name ="last_login_date")
     private Date lastLoginDate;
 
-    @Column (name = "ip_value")
-    @Lob
-    //접속허용 ip 관리 필드
-    private String ipValue;
-
     @Column (name = "delete_at")
     private Date deleteAt;
 
-    @Column
+    @Column(length = 50000)
     private String updator;
 
     @Column (name = "certification_number")
@@ -85,15 +80,10 @@ public class Admin {
     @ColumnDefault("0")
     private boolean certificationYn;
 
-    //long text
-    @Lob
-    @Column (name = "access_token")
-    private String accessToken;
-
     @Column (name = "approval_date")
     private Date approvalDate;
 
-    @Column (name = "phone_num")
+    @Column (name = "phone_num", length = 50000)
     private String phoneNum;
 
 }

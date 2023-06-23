@@ -32,7 +32,7 @@ public class UserLog {
     @Column (name = "menu_name")
     private String menuName;
 
-    @Column
+    @Column(length = 5000)
     private String content;
 
     @Temporal(value = TemporalType.TIMESTAMP)
