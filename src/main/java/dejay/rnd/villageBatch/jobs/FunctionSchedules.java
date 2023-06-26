@@ -1,19 +1,26 @@
 package dejay.rnd.villageBatch.jobs;
-import dejay.rnd.villageBatch.domain.Alarm;
-import dejay.rnd.villageBatch.domain.BatchLog;
-import dejay.rnd.villageBatch.domain.Transaction;
-import dejay.rnd.villageBatch.domain.TransactionHistory;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import dejay.rnd.villageBatch.domain.*;
 import dejay.rnd.villageBatch.repository.*;
+import dejay.rnd.villageBatch.service.PushService;
 import dejay.rnd.villageBatch.util.BatchUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.concurrent.ScheduledFuture;
 
+@Slf4j
 @Component
 public class FunctionSchedules {
 
@@ -22,13 +29,22 @@ public class FunctionSchedules {
     private final TransactionRepository transactionRepository;
     private final TransactionHistoryRepository transactionHistoryRepository;
     private final AlarmRepository alarmRepository;
+    private final NoticeRepository noticeRepository;
+    private final PushService pushRequest;
 
-    public FunctionSchedules(UserRepository userRepository, BatchLogRepository batchLogRepository, TransactionRepository transactionRepository, TransactionHistoryRepository transactionHistoryRepository, AlarmRepository alarmRepository) {
+    @Autowired
+    private ThreadPoolTaskScheduler threadPoolTaskScheduler;
+
+    private Map<String, ScheduledFuture<?>> jobMap = new HashMap<>();
+
+    public FunctionSchedules(UserRepository userRepository, BatchLogRepository batchLogRepository, TransactionRepository transactionRepository, TransactionHistoryRepository transactionHistoryRepository, AlarmRepository alarmRepository, NoticeRepository noticeRepository, PushService pushRequest) {
         this.userRepository = userRepository;
         this.batchLogRepository = batchLogRepository;
         this.transactionRepository = transactionRepository;
         this.transactionHistoryRepository = transactionHistoryRepository;
         this.alarmRepository = alarmRepository;
+        this.noticeRepository = noticeRepository;
+        this.pushRequest = pushRequest;
     }
 
     //5분마다 렌탈매칭후 12시간 지나면 자동 취소처리
@@ -101,5 +117,116 @@ public class FunctionSchedules {
         batchLog.setMethod("alarmDeleted()");
         batchLogRepository.save(batchLog);
 
+    }
+
+    @Scheduled(cron = "0 45 19 * * *")
+    public void testMethod() throws ParseException {
+        // TODO - 공지사항 푸쉬 알림
+        // 내용 : [공지사항] {공지사항 제목}
+        // 타이틀 : 새로운 공지사항
+        // 받는 사람 : 유형이 이벤트일 경우 이벤트 알림(marketing_notice_yn) ON인 사람한테만 보내기. 이벤트 유형이 아니면 토픽으로 전송
+
+        log.info("START testMethod ... ");
+        threadPoolTaskScheduler.shutdown();
+        threadPoolTaskScheduler.initialize();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+
+        LocalDateTime date = LocalDateTime.now();
+        Date now_date = Timestamp.valueOf(date);
+        Date now_date2 = Timestamp.valueOf(date.plusDays(3));
+        log.info("now_date is ... [{}]", now_date.toString());
+        log.info("LocalDateTime date ... [{}]", date);
+        log.info("LocalDateTime date plus one ... [{}]", date.plusDays(1));
+
+        log.info("dateFormat.format(now_date) is ... [{}]", dateFormat.format(now_date));
+        Date dt = dateFormat.parse(dateFormat.format(now_date));
+
+        log.info("dt is ... [{}]", dt.toString());
+        List<Notice> nLst = noticeRepository.findAllByDeleteYnAndActiveYnAndActiveAtBetween(false, true, now_date, now_date2);
+        log.info("Notice List size is ... [{}]", nLst.size());
+
+        JsonArray cronArr = new JsonArray();
+        nLst.forEach(
+                notice -> {
+                    log.info("notice Idx is ... [{}]", notice.getNoticeIdx());
+                    log.info("notice title is ... [{}]", notice.getTitle());
+                    Date activeAt = notice.getActiveAt();
+
+                    LocalDateTime ldt = activeAt.toInstant().atZone(ZoneId.systemDefault())
+                            .toLocalDateTime();
+
+                    log.info("ldt : {}", ldt);
+                    log.info("getYear : {}", ldt.getYear());
+                    log.info("getMonth : {}", ldt.getMonthValue());
+                    log.info("getDay : {}", ldt.getDayOfMonth());
+                    log.info("getHour : {}", ldt.getHour());
+                    log.info("getMinutes : {}", ldt.getMinute());
+                    log.info("getSeconds : {}", ldt.getSecond());
+                    String year = String.valueOf(ldt.getYear()).substring(2);
+                    String month = String.valueOf(ldt.getMonthValue());
+                    String day = String.valueOf(ldt.getDayOfMonth());
+                    String hour = String.valueOf(ldt.getHour());
+                    String minute = String.valueOf(ldt.getMinute());
+                    String second = String.valueOf(ldt.getSecond());
+
+                    JsonObject jObj = new JsonObject();
+                    jObj.addProperty("noticeIdx", notice.getNoticeIdx());
+                    jObj.addProperty("noticeType", notice.getNoticeType());
+                    jObj.addProperty("year", year);
+                    jObj.addProperty("month", month);
+                    jObj.addProperty("day", day);
+                    jObj.addProperty("hour", hour);
+                    jObj.addProperty("minute", minute);
+                    jObj.addProperty("second", second);
+
+                    cronArr.add(jObj);
+                }
+        );
+
+        this.exampleMethod(cronArr);
+    }
+
+
+    public void exampleMethod(JsonArray jArr) {
+        log.info("Enter exampleMethod ... ");
+        threadPoolTaskScheduler.setPoolSize(10);
+
+
+
+        if ( 0 < jArr.size() ) {
+            //ScheduledFuture<?> scheduledFuture = threadPoolTaskScheduler.schedule(runnableEx, new CronTrigger("0 54 16 * * ?"));
+            ScheduledFuture<?> scheduledFuture;
+            for (int i=0; i<jArr.size(); i++) {
+
+                JsonObject tmpObj = new JsonObject();
+                tmpObj = jArr.get(i).getAsJsonObject();
+
+                RunnableEx runnableEx = new RunnableEx(tmpObj.get("noticeIdx").getAsLong(), tmpObj.get("noticeType").getAsString(), noticeRepository, userRepository, pushRequest);
+
+                StringBuilder sb = new StringBuilder();
+
+                sb.append(tmpObj.get("second").getAsString());
+                sb.append(" ");
+                sb.append(tmpObj.get("minute").getAsString());
+                sb.append(" ");
+                sb.append(tmpObj.get("hour").getAsString());
+                sb.append(" ");
+                sb.append(tmpObj.get("day").getAsString());
+                sb.append(" ");
+                sb.append(tmpObj.get("month").getAsString());
+                sb.append("  ?");
+                //sb.append(tmpObj.get("year").getAsString());
+
+                log.info("cron !!!!! ......... [{}]", sb.toString());
+
+                scheduledFuture = threadPoolTaskScheduler.schedule(runnableEx, new CronTrigger(sb.toString()));
+            }
+        }
+
+
+
+        //scheduledFuture = threadPoolTaskScheduler.schedule(runnableEx, new CronTrigger("0 0 15 * ?"));
+        //jobMap.put("testId", scheduledFuture);
+        //threadPoolTaskScheduler.shutdown();
     }
 }

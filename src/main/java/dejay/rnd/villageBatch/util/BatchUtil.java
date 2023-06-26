@@ -58,8 +58,12 @@ public class BatchUtil {
         params.add("type", "0");
         params.add("title", pushDto.getTitle());
 
-        for (int i=0; i<pushDto.getHostIdxes().length; i++) {
-            params.add("hostIdxes", String.valueOf(pushDto.getHostIdxes()[i]));
+        if ( null != pushDto.getHostIdxes() ) {
+            for (int i=0; i<pushDto.getHostIdxes().length; i++) {
+                params.add("hostIdxes", String.valueOf(pushDto.getHostIdxes()[i]));
+            }
+        } else {
+            params.add("hostIdxes", null);
         }
         params.add("topicType", pushDto.getTopicType());
 

@@ -20,4 +20,15 @@ public class PushService {
 
         BatchUtil.pushRequest(pushDto);
     }
+
+    public void sendPush(Long[] hostIdxes, String title, String message, String topicType) {
+        PushDto pushDto = new PushDto();
+
+        pushDto.setHostIdxes(hostIdxes);
+        pushDto.setTitle(title);
+        pushDto.setMessage(message);
+        pushDto.setTopicType(topicType);
+
+        BatchUtil.pushRequest(pushDto);
+    }
 }
