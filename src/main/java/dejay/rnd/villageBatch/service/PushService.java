@@ -21,13 +21,27 @@ public class PushService {
         BatchUtil.pushRequest(pushDto);
     }
 
-    public void sendPush(Long[] hostIdxes, String title, String message, String topicType) {
+    // 토픽 있음
+    public void sendPush(Long[] hostIdxes, String title, String message, int type, String topicType) {
         PushDto pushDto = new PushDto();
 
         pushDto.setHostIdxes(hostIdxes);
         pushDto.setTitle(title);
         pushDto.setMessage(message);
         pushDto.setTopicType(topicType);
+        pushDto.setType(type);
+
+        BatchUtil.pushRequest(pushDto);
+    }
+
+    // 토픽 없음
+    public void sendPush(Long[] hostIdxes, String title, String message, int type) {
+        PushDto pushDto = new PushDto();
+
+        pushDto.setHostIdxes(hostIdxes);
+        pushDto.setTitle(title);
+        pushDto.setMessage(message);
+        pushDto.setType(type);
 
         BatchUtil.pushRequest(pushDto);
     }

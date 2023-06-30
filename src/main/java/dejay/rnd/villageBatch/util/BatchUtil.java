@@ -55,7 +55,7 @@ public class BatchUtil {
         params.add("adminIdx", null);
         params.add("targetIdx", "0");
         params.add("message", pushDto.getMessage());
-        params.add("type", "0");
+        params.add("type", String.valueOf(pushDto.getType()));
         params.add("title", pushDto.getTitle());
 
         if ( null != pushDto.getHostIdxes() ) {

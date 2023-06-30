@@ -1,6 +1,7 @@
 package dejay.rnd.villageBatch.jobs;
 
 
+import dejay.rnd.villageBatch.domain.BatchLog;
 import dejay.rnd.villageBatch.domain.Notice;
 import dejay.rnd.villageBatch.domain.User;
 import dejay.rnd.villageBatch.repository.BatchLogRepository;
@@ -51,7 +52,7 @@ public class RunnableEx implements Runnable {
 
                         String pushTitle = "새로운 공지사항";
 
-                        pushRequest.sendPush(hostIdxes, pushTitle, sb.toString());
+                        pushRequest.sendPush(hostIdxes, pushTitle, sb.toString(), 40);
                     }
                 }
             } else {
@@ -64,12 +65,17 @@ public class RunnableEx implements Runnable {
 
                     String pushTitle = "새로운 공지사항";
                     // AOS
-                    pushRequest.sendPush(null, pushTitle, sb.toString(), "village_android_notice");
+                    pushRequest.sendPush(null, pushTitle, sb.toString(), 40, "village_android_notice");
 
                     // IOS
-                    pushRequest.sendPush(null, pushTitle, sb.toString(), "village_ios_notice");
+                    pushRequest.sendPush(null, pushTitle, sb.toString(), 40, "village_ios_notice" );
                 }
             }
+
+            BatchLog batchLog = new BatchLog();
+
+            batchLog.setMethod("dynamic run()");
+            batchLogRepository.save(batchLog);
 
             log.info("FINISH BATCH ... ");
         } catch (Exception e) {
