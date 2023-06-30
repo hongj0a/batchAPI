@@ -121,7 +121,7 @@ public class FunctionSchedules {
 
 
     // 0시 0분 0초에 시작 -> 1시간마다 실행
-    @Scheduled(cron = "0 0 11/1 * * *")
+    @Scheduled(cron = "0 0 12/1 * * *")
     public void noticeMethod() throws ParseException {
         // TODO - 공지사항 푸쉬 알림
         // 내용 : [공지사항] {공지사항 제목}
