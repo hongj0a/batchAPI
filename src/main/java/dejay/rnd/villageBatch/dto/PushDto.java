@@ -15,6 +15,6 @@ public class PushDto {
     private String title;
     private String message;
     private Long targetIdx;
-    private int type;
+    private int type = 0;
     private String topicType;
 }
