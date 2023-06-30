@@ -3,6 +3,7 @@ package dejay.rnd.villageBatch.jobs;
 
 import dejay.rnd.villageBatch.domain.Notice;
 import dejay.rnd.villageBatch.domain.User;
+import dejay.rnd.villageBatch.repository.BatchLogRepository;
 import dejay.rnd.villageBatch.repository.NoticeRepository;
 import dejay.rnd.villageBatch.repository.UserRepository;
 import dejay.rnd.villageBatch.service.PushService;
@@ -18,13 +19,15 @@ public class RunnableEx implements Runnable {
     private final NoticeRepository noticeRepository;
     private final UserRepository userRepository;
     private final PushService pushRequest;
+    private final BatchLogRepository batchLogRepository;
 
-    public RunnableEx(long noticeIdx, String noticeType, NoticeRepository noticeRepository, UserRepository userRepository, PushService pushRequest) {
+    public RunnableEx(long noticeIdx, String noticeType, NoticeRepository noticeRepository, UserRepository userRepository, PushService pushRequest, BatchLogRepository batchLogRepository) {
         this.noticeIdx = noticeIdx;
         this.noticeType = noticeType;
         this.noticeRepository = noticeRepository;
         this.userRepository = userRepository;
         this.pushRequest = pushRequest;
+        this.batchLogRepository = batchLogRepository;
     }
 
     @Override

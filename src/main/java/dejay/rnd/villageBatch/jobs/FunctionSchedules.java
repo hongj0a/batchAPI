@@ -119,8 +119,10 @@ public class FunctionSchedules {
 
     }
 
-    @Scheduled(cron = "0 45 19 * * *")
-    public void testMethod() throws ParseException {
+
+    // 0시 0분 0초에 시작 -> 1시간마다 실행
+    @Scheduled(cron = "0 0 11/1 * * *")
+    public void noticeMethod() throws ParseException {
         // TODO - 공지사항 푸쉬 알림
         // 내용 : [공지사항] {공지사항 제목}
         // 타이틀 : 새로운 공지사항
@@ -133,16 +135,16 @@ public class FunctionSchedules {
 
         LocalDateTime date = LocalDateTime.now();
         Date now_date = Timestamp.valueOf(date);
-        Date now_date2 = Timestamp.valueOf(date.plusDays(3));
+        Date now_date2 = Timestamp.valueOf(date.plusHours(1));
         log.info("now_date is ... [{}]", now_date.toString());
         log.info("LocalDateTime date ... [{}]", date);
-        log.info("LocalDateTime date plus one ... [{}]", date.plusDays(1));
+        log.info("LocalDateTime date plus 1 hours ... [{}]", date.plusHours(1));
 
         log.info("dateFormat.format(now_date) is ... [{}]", dateFormat.format(now_date));
         Date dt = dateFormat.parse(dateFormat.format(now_date));
 
         log.info("dt is ... [{}]", dt.toString());
-        List<Notice> nLst = noticeRepository.findAllByDeleteYnAndActiveYnAndActiveAtBetween(false, true, now_date, now_date2);
+        List<Notice> nLst = noticeRepository.findAllByPushNowYnAndDeleteYnAndActiveYnAndActiveAtBetween(false, false, true, now_date, now_date2);
         log.info("Notice List size is ... [{}]", nLst.size());
 
         JsonArray cronArr = new JsonArray();
@@ -183,25 +185,30 @@ public class FunctionSchedules {
                 }
         );
 
-        this.exampleMethod(cronArr);
+        this.scheduleMethod(cronArr);
+
+        BatchLog batchLog = new BatchLog();
+
+        batchLog.setMethod("static noticeMethod()");
+        batchLogRepository.save(batchLog);
     }
 
 
-    public void exampleMethod(JsonArray jArr) {
+    public void scheduleMethod(JsonArray jArr) {
         log.info("Enter exampleMethod ... ");
         threadPoolTaskScheduler.setPoolSize(10);
 
 
 
         if ( 0 < jArr.size() ) {
-            //ScheduledFuture<?> scheduledFuture = threadPoolTaskScheduler.schedule(runnableEx, new CronTrigger("0 54 16 * * ?"));
             ScheduledFuture<?> scheduledFuture;
+
             for (int i=0; i<jArr.size(); i++) {
 
                 JsonObject tmpObj = new JsonObject();
                 tmpObj = jArr.get(i).getAsJsonObject();
 
-                RunnableEx runnableEx = new RunnableEx(tmpObj.get("noticeIdx").getAsLong(), tmpObj.get("noticeType").getAsString(), noticeRepository, userRepository, pushRequest);
+                RunnableEx runnableEx = new RunnableEx(tmpObj.get("noticeIdx").getAsLong(), tmpObj.get("noticeType").getAsString(), noticeRepository, userRepository, pushRequest, batchLogRepository);
 
                 StringBuilder sb = new StringBuilder();
 

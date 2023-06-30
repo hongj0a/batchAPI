@@ -74,7 +74,7 @@ public class Notice {
     @Column (name = "delete_at")
     private Date deleteAt;
 
-    @Column(length = 50000)
+    @Column
     private String updator;
 
     @Column (name = "active_at")
@@ -85,4 +85,8 @@ public class Notice {
 
     @Column (name = "end_at")
     private Date endAt;
+
+    @ColumnDefault("0")
+    @Column (name = "push_now_yn")
+    private boolean pushNowYn;
 }

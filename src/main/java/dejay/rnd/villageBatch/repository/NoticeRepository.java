@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
-    List<Notice> findAllByDeleteYnAndActiveYnAndActiveAtBetween(boolean deleteYn, boolean activeYn, Date sTime, Date eTime);
+    List<Notice> findAllByPushNowYnAndDeleteYnAndActiveYnAndActiveAtBetween(boolean pushNowYn, boolean deleteYn, boolean activeYn, Date sTime, Date eTime);
 
     Notice findByDeleteYnAndActiveYnAndNoticeIdx(boolean deleteYn, boolean activeYn, long noticeIdx);
+
+
 }
