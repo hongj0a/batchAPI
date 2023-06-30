@@ -1,4 +1,5 @@
 package dejay.rnd.villageBatch.jobs;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dejay.rnd.villageBatch.domain.*;
@@ -6,7 +7,6 @@ import dejay.rnd.villageBatch.repository.*;
 import dejay.rnd.villageBatch.service.PushService;
 import dejay.rnd.villageBatch.util.BatchUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
@@ -32,8 +32,7 @@ public class FunctionSchedules {
     private final NoticeRepository noticeRepository;
     private final PushService pushRequest;
 
-    @Autowired
-    private ThreadPoolTaskScheduler threadPoolTaskScheduler;
+    private ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
 
     private Map<String, ScheduledFuture<?>> jobMap = new HashMap<>();
 
@@ -121,7 +120,7 @@ public class FunctionSchedules {
 
 
     // 0시 0분 0초에 시작 -> 1시간마다 실행
-    @Scheduled(cron = "0 0 13/1 * * *")
+    @Scheduled(cron = "0 0 14 * * *")
     public void noticeMethod() throws ParseException {
         // TODO - 공지사항 푸쉬 알림
         // 내용 : [공지사항] {공지사항 제목}
@@ -185,7 +184,9 @@ public class FunctionSchedules {
                 }
         );
 
-        this.scheduleMethod(cronArr);
+        if ( 0 < cronArr.size() ) {
+            this.scheduleMethod(cronArr);
+        }
 
         BatchLog batchLog = new BatchLog();
 
